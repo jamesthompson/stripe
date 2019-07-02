@@ -18,15 +18,15 @@ module Web.Stripe.Client
     , APIVersion    (..)
     ) where
 
-import           Data.Aeson      (Value, Result(..), fromJSON)
-import           Data.ByteString (ByteString)
-import           Data.Data       (Data, Typeable)
-import           Data.Monoid     (mempty)
-import           Data.Text       as T
-import           Text.Read       (lexP, pfail)
-import qualified Text.Read       as R
-import           Web.Stripe.StripeRequest
+import           Data.Aeson               (Result (..), Value, fromJSON)
+import           Data.ByteString          (ByteString)
+import           Data.Data                (Data, Typeable)
+import           Data.Monoid              (mempty)
+import           Data.Text                as T
+import           Text.Read                (lexP, pfail)
+import qualified Text.Read                as R
 import           Web.Stripe.Error
+import           Web.Stripe.StripeRequest
 import           Web.Stripe.Util
 
 
@@ -44,18 +44,24 @@ data StripeConfig = StripeConfig
 
 ------------------------------------------------------------------------------
 -- | API Version
-data APIVersion =
-    V20141007 -- ^ Stripe API Version for this package release
+data APIVersion
+    = V20141007 -- ^ Stripe API Version for this package release
+    | V20190516
+    | V20190314
     deriving (Eq, Ord, Data, Typeable)
 
 instance Show APIVersion where
     show V20141007 = "2014-10-07"
+    show V20190516 = "2019-05-16"
+    show V20190314 = "2019-03-14"
 
 instance Read APIVersion where
   readPrec =
     do (R.String s) <- lexP
        case s of
          "2014-10-07" -> return V20141007
+         "2019-05-16" -> return V20190516
+         "2019-03-14" -> return V20190314
          _            -> pfail
 
 ------------------------------------------------------------------------------

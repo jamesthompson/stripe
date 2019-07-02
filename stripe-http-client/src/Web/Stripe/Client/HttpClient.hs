@@ -1,5 +1,5 @@
-{-# LANGUAGE FlexibleContexts  #-}
 {-# LANGUAGE CPP               #-}
+{-# LANGUAGE FlexibleContexts  #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 module Web.Stripe.Client.HttpClient
@@ -24,23 +24,24 @@ import qualified Data.ByteString.Lazy     as BSL
 import qualified Data.Text.Encoding       as TE
 import qualified Network.HTTP.Types       as Http
 
-import Data.Aeson               as A
-import Data.ByteString          (ByteString)
-import Data.Monoid              ((<>))
+import           Data.Aeson               as A
+import           Data.ByteString          (ByteString)
+import           Data.Monoid              ((<>))
 #if MIN_VERSION_http_client(0,5,13)
-import Network.HTTP.Client      as Http hiding (withManager, withConnection)
+import           Network.HTTP.Client      as Http hiding (withConnection,
+                                                   withManager)
 #else
-import Network.HTTP.Client      as Http hiding (withManager)
+import           Network.HTTP.Client      as Http hiding (withManager)
 #endif
-import Network.HTTP.Client.TLS  as TLS
+import           Network.HTTP.Client.TLS  as TLS
 
 import qualified Web.Stripe.StripeRequest as S
 
-import Web.Stripe.Client (APIVersion (..), StripeConfig (..),
-                          StripeError (..), StripeKey (..),
-                          StripeRequest, StripeReturn,
-                          attemptDecode, handleStream,
-                          parseFail, toBytestring, unknownCode)
+import           Web.Stripe.Client        (APIVersion (..), StripeConfig (..),
+                                           StripeError (..), StripeKey (..),
+                                           StripeRequest, StripeReturn,
+                                           attemptDecode, handleStream,
+                                           parseFail, toBytestring, unknownCode)
 
 
 -- | Create a request to 'Stripe's API.
@@ -158,4 +159,4 @@ urlEncodeBody headers req = req {
     body = pure (Http.renderSimpleQuery False headers)
 
 stripeVersion :: APIVersion
-stripeVersion = V20141007
+stripeVersion = V20190314

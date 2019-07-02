@@ -61,17 +61,20 @@ module Web.Stripe.Plan
     ) where
 
 import           Data.Text                (Text)
-import           Web.Stripe.StripeRequest (Method (GET, POST, DELETE), Param(..),
-                                           StripeHasParam, StripeRequest (..),
-                                           StripeReturn, ToStripeParam(..),
-                                           mkStripeRequest)
-import           Web.Stripe.Types         (PlanId (..) , Plan (..), PlanName(..),
-                                           Interval (..), StripeList(..),
-                                           IntervalCount (..), TrialPeriodDays (..),
-                                           Limit(..), StartingAfter(..),
-                                           EndingBefore(..), StripeDeleteResult(..),
-                                           Currency (..), Amount(..),
-                                           StatementDescription(..), MetaData(..))
+import           Web.Stripe.StripeRequest (Method (DELETE, GET, POST),
+                                           Param (..), StripeHasParam,
+                                           StripeRequest (..), StripeReturn,
+                                           ToStripeParam (..), mkStripeRequest)
+import           Web.Stripe.Types         (Amount (..), Currency (..),
+                                           EndingBefore (..), Interval (..),
+                                           IntervalCount (..), Limit (..),
+                                           MetaData (..), Plan (..),
+                                           PlanId (..), PlanName (..),
+                                           StartingAfter (..),
+                                           StatementDescription (..),
+                                           StripeDeleteResult (..),
+                                           StripeList (..),
+                                           TrialPeriodDays (..))
 import           Web.Stripe.Util          ((</>))
 
 ------------------------------------------------------------------------------
@@ -82,20 +85,22 @@ createPlan
     -> Currency              -- ^ `Currency` of `Plan`
     -> Interval              -- ^ Billing Frequency (i.e. `Day`, `Week` or `Month`)
     -> PlanName              -- ^ Name of `Plan` to be displayed on `Invoice`s
+    -> Text                  -- ^ Product
     -> StripeRequest CreatePlan
 createPlan
   (PlanId planid)
   amount
   currency
   interval
-  name = request
+  (PlanName name)
+  product = request
   where request = mkStripeRequest POST url params
         url     = "plans"
         params  = toStripeParam (Param ("id" :: Text, planid)) $
                   toStripeParam amount $
                   toStripeParam currency $
                   toStripeParam interval $
-                  toStripeParam name $
+                  toStripeParam (Param ("product" :: Text, product)) $
                   []
 
 data CreatePlan
