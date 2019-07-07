@@ -75,23 +75,25 @@ module Web.Stripe.Subscription
     , TrialEnd           (..)
     ) where
 
-import           Web.Stripe.StripeRequest   (Method (GET, POST, DELETE),
-                                             StripeHasParam, StripeReturn,
-                                             StripeRequest (..),
-                                             ToStripeParam(..), mkStripeRequest)
-import           Web.Stripe.Util            ((</>))
-import           Web.Stripe.Types           (ApplicationFeePercent(..),
-                                             AtPeriodEnd(..), CardId(..),
-                                             CustomerId (..), Coupon(..),
-                                             CouponId(..), EndingBefore(..),
-                                             ExpandParams(..), Limit(..), MetaData(..),
-                                             PlanId (..), Prorate(..), Quantity(..),
-                                             StartingAfter(..),
-                                             Subscription (..), StripeList(..),
-                                             SubscriptionId (..),
-                                             SubscriptionStatus (..), TaxPercent(..), 
-                                             TrialEnd(..))
-import           Web.Stripe.Types.Util      (getCustomerId)
+import           Data.Text                (Text)
+import           Web.Stripe.StripeRequest (Method (DELETE, GET, POST),
+                                           Param (..), StripeHasParam,
+                                           StripeRequest (..), StripeReturn,
+                                           ToStripeParam (..), mkStripeRequest)
+import           Web.Stripe.Types         (ApplicationFeePercent (..),
+                                           AtPeriodEnd (..), CardId (..),
+                                           Coupon (..), CouponId (..),
+                                           CustomerId (..), EndingBefore (..),
+                                           ExpandParams (..), Limit (..),
+                                           MetaData (..), PlanId (..),
+                                           Prorate (..), Quantity (..),
+                                           StartingAfter (..), StripeList (..),
+                                           Subscription (..),
+                                           SubscriptionId (..),
+                                           SubscriptionStatus (..),
+                                           TaxPercent (..), TrialEnd (..))
+import           Web.Stripe.Types.Util    (getCustomerId)
+import           Web.Stripe.Util          ((</>))
 
 ------------------------------------------------------------------------------
 -- | Create a `Subscription` by `CustomerId` and `PlanId`
@@ -100,11 +102,13 @@ createSubscription
     -> PlanId     -- ^ The `PlanId` to associate the `Subscription` with
     -> StripeRequest CreateSubscription
 createSubscription
-    customerid
-    planId = request
+    (CustomerId customerId)
+    (PlanId planId) = request
   where request = mkStripeRequest POST url params
-        url     = "customers" </> getCustomerId customerid </> "subscriptions"
-        params  = toStripeParam planId []
+        url     = "subscriptions"
+        params  = toStripeParam (Param ("items[0][plan]" :: Text, planId)) $
+                  toStripeParam (Param ("customer" :: Text, customerId))   $
+                  []
 
 data CreateSubscription
 type instance StripeReturn CreateSubscription = Subscription
