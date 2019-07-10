@@ -1563,14 +1563,13 @@ data BalanceTransaction = BalanceTransaction {
     , balanceTransactionObject         :: Text
     , balanceTransactionAmount         :: Int
     , balanceTransactionCurrency       :: Currency
-    , balanceTransactionNet            :: Int
     , balanceTransactionType           :: TransactionType
     , balanceTransactionCreated        :: UTCTime
-    , balanceTransactionAvailableOn    :: UTCTime
-    , balanceTransactionStatus         :: Text
-    , balanceTransactionFee            :: Int
-    , balanceTransactionFeeDetails     :: [FeeDetails]
-    , balanceTransactionFeeSource      :: Expandable ChargeId
+    -- , balanceTransactionAvailableOn    :: UTCTime
+    -- , balanceTransactionStatus         :: Text
+    -- , balanceTransactionFee            :: Int
+    -- , balanceTransactionFeeDetails     :: [FeeDetails]
+    -- , balanceTransactionFeeSource      :: Expandable ChargeId
     , balanceTransactionFeeDescription :: Maybe Description
     } deriving (Read, Show, Eq, Ord, Data, Typeable)
 
@@ -1582,14 +1581,13 @@ instance FromJSON BalanceTransaction where
                           <*> o .: "object"
                           <*> o .: "amount"
                           <*> o .: "currency"
-                          <*> o .: "net"
                           <*> o .: "type"
                           <*> (fromSeconds <$> o .: "created")
-                          <*> (fromSeconds <$> o .: "available_on")
-                          <*> o .: "status"
-                          <*> o .: "fee"
-                          <*> o .: "fee_details"
-                          <*> o .: "source"
+                          -- <*> (fromSeconds <$> o .: "available_on")
+                          -- <*> o .: "status"
+                          -- <*> o .: "fee"
+                          -- <*> o .: "fee_details"
+                          -- <*> o .: "source"
                           <*> o .:? "description"
    parseJSON _ = mzero
 
